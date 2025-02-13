@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Carinfo - Electric Car Portal</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            text-align: center;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-image: url('https://via.placeholder.com/1920x400?text=Electric+Cars+Header'); /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Dark overlay for better text visibility */
+        }
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        .logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #00bfff;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            font-weight: 300;
+            color: #cccccc;
+        }
+
+        /* Search and Filter Container */
+        .search-filter-container {
+            margin: 20px;
+        }
+        .search-filter-container input,
+        .search-filter-container select {
+            padding: 8px 12px;
+            font-size: 1em;
+            border: 2px solid #00bfff;
+            border-radius: 5px;
+            background-color: #333333;
+            color: #ffffff;
+            cursor: pointer;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+            margin: 5px;
+        }
+        .search-filter-container input:hover,
+        .search-filter-container select:hover {
+            border-color: #00ffff;
+            background-color: #444444;
+        }
+        .search-filter-container input::placeholder {
+            color: #cccccc;
+        }
+
+        /* Car List */
+        .car-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .car-item {
+            background-color: #2a2a2a;
+            border: 1px solid #444444;
+            padding: 15px;
+            margin: 10px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
+            position: relative;
+        }
+        .car-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 191, 255, 0.4);
+        }
+        .car-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #444444;
+            transition: border-color 0.3s ease;
+        }
+        .car-item:hover img {
+            border-color: #00bfff;
+        }
+        .car-item h3 {
+            margin: 10px 0;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #00bfff;
+        }
+        .car-item p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        .car-item .favorite-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #ff4757;
+            transition: color 0.3s ease;
+        }
+        .car-item .favorite-icon.active {
+            color: #ff6b81;
+        }
+        .car-item .learn-more {
+            background-color: #00bfff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .car-item .learn-more:hover {
+            background-color: #00ffff;
+        }
+
+        /* Favorites Section */
+        #favorites-section {
+            margin: 20px;
+            padding: 20px;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        #favorites-section h2 {
+            color: #00bfff;
+        }
+        #favorites-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: left;
+            position: relative;
+        }
+        .modal-content h2 {
+            color: #00bfff;
+        }
+        .modal-content p {
+            color: #cccccc;
+        }
+        .modal-content .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #cccccc;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0a0a0a, #1f1f1f);
+            color: #cccccc;
+            padding: 10px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="electric-vehicle-charging-station-logo-electric-car-icon-logo-design-vector.jpg" alt="E-Carinfo Logo" class="logo"> <!-- Replace with your logo URL -->
+            <h1>E-Carinfo</h1>
+            <p>Find Your Perfect Electric Car</p>
+        </div>
+    </header>
+
+    <!-- Search and Filter -->
+    <div class="search-filter-container">
+        <input type="text" id="search-bar" placeholder="Search for a car..." oninput="searchCars()">
+        <select id="brand-filter" onchange="filterCars()">
+            <option value="all">All</option>
+            <option value="tesla">Tesla</option>
+            <option value="nissan">Nissan</option>
+            <option value="bmw">BMW</option>
+            <option value="audi">Audi</option>
+        </select>
+    </div>
+
+    <!-- Favorites Section -->
+    <div id="favorites-section">
+        <h2>Favorites</h2>
+        <div id="favorites-list"></div>
+    </div>
+
+    <!-- Car List -->
+    <div class="car-list" id="car-list">
+        <!-- Cars will be dynamically populated here -->
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-details"></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2023 E-Carinfo. All rights reserved.
+    </footer>
+
+    <script>
+        // Sample Car Data
+        const cars = [
+            {
+                brand: "tesla",
+                name: "Tesla Model S",
+                image: "teslamodels.jpg",
+                price: "$79,990",
+                range: "405 miles",
+                speed: "200 mph",
+                battery: "100 kWh",
+                details: "The Tesla Model S is a luxury all-electric sedan known for its impressive range and performance."
+            },
+            {
+                brand: "nissan",
+                name: "Nissan Leaf",
+                image: "Nissan_Leaf_2022-01@2x.jpg",
+                price: "$31,600",
+                range: "149 miles",
+                speed: "89 mph",
+                battery: "40 kWh",
+                details: "The Nissan Leaf is a compact electric car offering great value and efficiency."
+            },
+            {
+                brand: "bmw",
+                name: "BMW i4",
+                image: "bmw-i4-edrive-40-onepager-gallery-i4-exterior-videos-02.jpg",
+                price: "$55,900",
+                range: "301 miles",
+                speed: "118 mph",
+                battery: "83.9 kWh",
+                details: "The BMW i4 is a sporty electric sedan combining luxury with cutting-edge technology."
+            },
+            {
+                brand: "audi",
+                name: "Audi e-tron",
+                image: "2025-audi-e-tron-gt-102-66743d083580e.avif",
+                price: "$69,100",
+                range: "222 miles",
+                speed: "124 mph",
+                battery: "95 kWh",
+                details: "The Audi e-tron is a premium electric SUV offering comfort and advanced features."
+            }
+        ];
+
+        // Populate Car List
+        const carList = document.getElementById("car-list");
+        const favoritesList = document.getElementById("favorites-list");
+        let favorites = [];
+
+        function renderCars(carsToRender) {
+            carList.innerHTML = "";
+            carsToRender.forEach(car => {
+                const carItem = document.createElement("div");
+                carItem.className = "car-item";
+                carItem.setAttribute("data-brand", car.brand);
+                carItem.innerHTML = `
+                    <span class="favorite-icon" onclick="toggleFavorite('${car.name}')">❤️</span>
+                    <img src="${car.image}" alt="${car.name}">
+                    <h3>${car.name}</h3>
+                    <p><strong>Price:</strong> ${car.price}</p>
+                    <p><strong>Range:</strong> ${car.range}</p>
+                    <p><strong>Top Speed:</strong> ${car.speed}</p>
+                    <p><strong>Battery:</strong> ${car.battery}</p>
+                    <button class="learn-more" onclick="openModal('${car.name}', '${car.details}')">Learn More</button>
+                `;
+                carList.appendChild(carItem);
+            });
+        }
+
+        // Initial Render
+        renderCars(cars);
+
+        // Filter Cars by Brand
+        function filterCars() {
+            const filter = document.getElementById("brand-filter").value;
+            const filteredCars = filter === "all" ? cars : cars.filter(car => car.brand === filter);
+            renderCars(filteredCars);
+        }
+
+        // Search Cars by Name
+        function searchCars() {
+            const query = document.getElementById("search-bar").value.toLowerCase();
+            const searchedCars = cars.filter(car => car.name.toLowerCase().includes(query));
+            renderCars(searchedCars);
+        }
+
+        // Toggle Favorite
+        function toggleFavorite(carName) {
+            const car = cars.find(car => car.name === carName);
+            if (favorites.includes(car)) {
+                favorites = favorites.filter(fav => fav.name !== carName);
+            } else {
+                favorites.push(car);
+            }
+            renderFavorites();
+        }
+
+        // Render Favorites
+        function renderFavorites() {
+            favoritesList.innerHTML = "";
+            favorites.forEach(car => {
+                const favoriteItem = document.createElement("div");
+                favoriteItem.className = "car-item";
+                favoriteItem.innerHTML = `
+                    <img src="${car.image}" alt="${car.name}">
+                    <h3>${car.name}</h3>
+                `;
+                favoritesList.appendChild(favoriteItem);
+            });
+        }
+
+        // Modal Functions
+        function openModal(title, details) {
+            document.getElementById("modal-title").innerText = title;
+            document.getElementById("modal-details").innerText = details;
+            document.getElementById("modal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+    </script>
+</body>
+</html>
